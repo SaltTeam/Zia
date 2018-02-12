@@ -1,0 +1,3 @@
+[submodule "sza-plus-plus"]
+	path = sza-plus-plus
+	url = https://github.com/scorsi/sza-plus-plus
