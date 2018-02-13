@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -W -Wall -Wextra")
 
-include_directories(. sza-plus-plus/api/pp core/includes)
+include_directories(. sza-plus-plus/api/pp core/includes nlohmann)
 
 add_executable(zia core/sources/main.cpp
 
@@ -16,7 +16,8 @@ add_executable(zia core/sources/main.cpp
         core/includes/network/SocketException.hpp core/sources/network/SocketException.cpp
         core/includes/Usings.hpp
         core/sources/Core.cpp core/includes/Core.hpp
-        core/sources/Pipeline.cpp core/includes/Pipeline.hpp)
+        core/sources/Pipeline.cpp core/includes/Pipeline.hpp
+        core/sources/ParserConfig.cpp core/includes/ParserConfig.hpp)
 
 set(modExampleSourceFiles
         modules/modExample/modExample.cpp
