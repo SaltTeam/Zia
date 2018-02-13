@@ -3,4 +3,4 @@ project(zia)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(zia main.cpp)
+add_executable(zia core/sources/main.cpp)
