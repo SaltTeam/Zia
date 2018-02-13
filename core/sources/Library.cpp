@@ -5,13 +5,13 @@
 #include <Windows.h>
 #include "Library.hpp"
 
-Library::Library(std::string const& libname) {
+Library::Library(std::string const& libName) {
 #if isLinux
-    handler = dlopen(libname.c_str(), RTLD_LAZY);
+    handler = dlopen(libName.c_str(), RTLD_LAZY);
     if (handler == NULL)
         std::cout << dlerror() << std::endl;
 #else
-    handler = LoadLibrary(libname.c_str());
+    handler = LoadLibrary(libName.c_str());
     if (handler == NULL)
         std::cout << "unable to load dll" << std::endl;
 #endif
@@ -21,6 +21,9 @@ Library::~Library() {
 #if isLinux
     if (handler != NULL)
         dlclose(handler);
+#else
+	if (handler != NULL)
+		FreeLibrary((HINSTANCE)(handler));
 #endif
 }
 
@@ -44,6 +47,8 @@ bool Library::loadLibrary(std::string const& libName) {
         return false;
     return true;
 #else
-	return true;
+	handler = LoadLibrary(libName.c_str());
+	if (handler == NULL)
+		return false;
 #endif
 }
