@@ -8,10 +8,17 @@
 bool modExample::perform() {
     this->response->useStandardData();
 
-    this->response
-            ->setStatus(200, "OK")
-            ->addHeader("Set-Cookie", "test")
-            ->setStandardData(this->conf.get_at("message")->get<std::string>());
+    try {
+        this->response
+                ->setStatus(200, "OK")
+                ->addHeader("Set-Cookie", "test")
+                ->setStandardData(this->conf.get_at("message")->get<std::string>());
+    }
+    catch (zia::apipp::Conf::InvalidAccess const& e) {
+        this->response
+                ->setStatus(500, "Internal Server Error")
+                ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
+    }
 
     // Return true to continue the pipeline, false to send response to the client.
     return false;
