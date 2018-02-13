@@ -2,6 +2,11 @@
 // Created by soszyn_h on 13/02/18.
 //
 
+#ifdef WIN32
+#include "stdafx.h"
+#include <Windows.h>
+#endif
+
 #include "sza-plus-plus/api/module.h"
 #include "modExample.hpp"
 
@@ -25,7 +30,11 @@ bool modExample::perform() {
 }
 
 extern "C" {
+#ifdef WIN32
+__declspec(dllexport) zia::api::Module* create() {
+#else
 zia::api::Module* create() {
+#endif
     zia::api::Module* mod = nullptr;
     try {
         mod = new modExample();
