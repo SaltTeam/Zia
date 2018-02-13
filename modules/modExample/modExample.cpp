@@ -3,11 +3,12 @@
 //
 
 #ifdef WIN32
-#include "stdafx.h"
+#include "../WinCompat/stdafx.h"
 #include <Windows.h>
 #endif
 
 #include "sza-plus-plus/api/module.h"
+#include "sza-plus-plus/api/pp/conf.hpp"
 #include "modExample.hpp"
 
 bool modExample::perform() {
@@ -20,6 +21,7 @@ bool modExample::perform() {
                 ->setStandardData(this->conf.get_at("message")->get<std::string>());
     }
     catch (zia::apipp::Conf::InvalidAccess const& e) {
+		(void)(e);
         this->response
                 ->setStatus(500, "Internal Server Error")
                 ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
