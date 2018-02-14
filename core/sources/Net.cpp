@@ -1,3 +1,4 @@
+#include <ZiaSocket.hpp>
 #include "Net.hpp"
 
 void module::NetMod::setSelect() {
@@ -18,6 +19,7 @@ std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket> socket) {
 
 void module::NetMod::handleConnection(Callback cb) {
     std::string msg;
+    NetInfo inf;
     if (_select.isFdSetRead(_socket.getSocketFd())) {
         std::unique_ptr<mysocket::Socket> client(_socket.Accept());
         if (!client)
@@ -26,9 +28,8 @@ void module::NetMod::handleConnection(Callback cb) {
             return;
         Raw rawMsg;
         for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));
-        //todo netInfo contains the socket, need to do a NetModSocket
-        //todo who contains a my socket and impl the 2 funcs of the api
-        cb(rawMsg, NetInfo());
+        inf.sock = new ZiaSocket(client);
+        cb(rawMsg, inf);
     }
 }
 
@@ -44,8 +45,7 @@ bool module::NetMod::send(zia::api::ImplSocket *sock, const Raw &resp) {
     std::string msg;
     std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
                    [](auto c) { return static_cast<char>(c); });
-    // convert resp into string
-    //todo send the message
+    sock->sendMessage(msg);
 }
 
 bool module::NetMod::config(const zia::api::Conf &conf) {
@@ -53,5 +53,5 @@ bool module::NetMod::config(const zia::api::Conf &conf) {
 }
 
 bool module::NetMod::stop() {
-
+    return true;
 }
