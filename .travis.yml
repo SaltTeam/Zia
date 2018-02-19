@@ -22,4 +22,4 @@ install:
 script:
   - mkdir build
   - cd build
-  - cmake .. && make modExample
+  - cmake .. && make modExample modStaticFiles

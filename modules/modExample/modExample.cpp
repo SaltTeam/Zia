@@ -17,11 +17,13 @@ bool modExample::perform() {
         this->response
                 ->setStatus(200, "OK")
                 ->addHeader("Set-Cookie", "test")
+                ->addHeader("Content-Length", std::to_string(this->conf.get_at("message")->get<std::string>().length()))
                 ->setStandardData(this->conf.get_at("message")->get<std::string>());
     }
     catch (zia::apipp::Conf::InvalidAccess const& e) {
         this->response
                 ->setStatus(500, "Internal Server Error")
+                ->addHeader("Content-Length", "45")
                 ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
     }
 
