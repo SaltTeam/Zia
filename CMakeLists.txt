@@ -21,7 +21,8 @@ add_executable(zia core/sources/main.cpp
 
 set(modExampleSourceFiles
         modules/modExample/modExample.cpp
-        modules/modExample/modExample.hpp)
+        modules/modExample/modExample.hpp
+        sza-plus-plus/api/pp/conf.cpp)
 
 add_library(modExample SHARED ${modExampleSourceFiles})
 
