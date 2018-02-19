@@ -4,7 +4,7 @@
 #include "Usings.hpp"
 
 namespace module {
-    class ZiaSocket : zia::api::ImplSocket {
+    class ZiaSocket : public zia::api::ImplSocket {
     protected:
         std::unique_ptr<mysocket::Socket> _socket;
 
@@ -21,7 +21,7 @@ namespace module {
             std::string msg;
             char buf[1024];
             ssize_t ret;
-            while ((ret = socket->Recv(buf, 1024, MSG_WAITALL)) > 0)
+            while ((ret = _socket->Recv(buf, 1024, MSG_WAITALL)) > 0)
                 msg += buf;
             return (ret < 0) ? nullptr : msg;
         }

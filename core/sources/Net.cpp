@@ -8,7 +8,7 @@ void module::NetMod::setSelect() {
     _select.addReadFd(_socket.getSocketFd());
 }
 
-std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket> socket) {
+std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) {
     std::string msg;
     char buf[1024];
     ssize_t ret;
@@ -24,7 +24,7 @@ void module::NetMod::handleConnection(Callback cb) {
         std::unique_ptr<mysocket::Socket> client(_socket.Accept());
         if (!client)
             return;
-        if ((msg = httpRead(&client)) == nullptr)
+        if ((msg = httpRead(client)).empty())
             return;
         Raw rawMsg;
         for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));

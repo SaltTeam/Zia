@@ -7,7 +7,7 @@
 /// \namespace module
 namespace module {
     /// \class NetMod
-    class NetMod : Net {
+    class NetMod : public Net {
 
     protected:
         mysocket::Socket _socket;
@@ -18,7 +18,7 @@ namespace module {
 
         void handleConnection(Callback cb);
 
-        std::string httpRead(std::unique_ptr<mysocket::Socket> socket);
+        std::string httpRead(std::unique_ptr<mysocket::Socket>& socket);
 
     public:
         NetMod() : _socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), _select() {
