@@ -17,19 +17,22 @@ bool modStaticFiles::perform() {
 
     std::string uri{};
     try {
-        uri = this->conf.get_at("basedir")->get<std::string>() + this->request->uri;
+        uri = this->conf.get_at("basedir").get<std::string>() + this->request->uri;
     }
     catch (...) {
         this->response
                 ->setStatus(500, "Internal Server Error")
                 ->addHeader("Content-Length", "45")
                 ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
+        return false;
     }
     std::ifstream ifstream{};
     auto ss = std::ostringstream{};
 
     try {
         ifstream.open(uri, std::ifstream::in | std::ifstream::binary);
+        if (!ifstream.is_open())
+            throw std::exception();
         ss << ifstream.rdbuf();
         ifstream.close();
     }

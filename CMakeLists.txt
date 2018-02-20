@@ -5,11 +5,23 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -W -Wall -Wextra")
 
-include_directories(. sza-plus-plus/api/pp core/includes)
+include_directories(
+        sza-plus-plus/api/pp
+        core/includes
+        modules/
+        .
+)
+
+set(API_SOURCES
+        sza-plus-plus/api/pp/conf.cpp
+        sza-plus-plus/api/pp/conf.hpp
+        sza-plus-plus/api/pp/module.hpp
+        sza-plus-plus/api/pp/http.hpp
+        sza-plus-plus/api/pp/net.hpp)
 
 add_executable(zia core/sources/main.cpp
 
-        sza-plus-plus/api/pp/conf.cpp sza-plus-plus/api/pp/conf.hpp sza-plus-plus/api/pp/module.hpp sza-plus-plus/api/pp/http.hpp sza-plus-plus/api/pp/net.hpp
+        ${API_SOURCES}
 
         core/includes/Usings.hpp
         core/sources/Core.cpp core/includes/Core.hpp
@@ -35,6 +47,25 @@ add_library(modStaticFiles SHARED ${modStaticFilesSourceFiles})
 
 #######################
 #       !Modules      #
+#######################
+
+#######################
+#        Test         #
+#######################
+
+if (NOT "$ENV{TRAVIS}" STREQUAL "")
+
+    add_executable(test_modStaticFiles
+            ${API_SOURCES}
+            travis/test_modStaticFiles.cpp
+            modules/modStaticFiles/modStaticFiles.cpp
+            modules/MIME_types.cpp
+    )
+
+endif()
+
+#######################
+#        !Test        #
 #######################
 
 if (WIN32)
