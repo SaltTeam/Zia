@@ -31,6 +31,7 @@ void* Library::loadSym(std::string const& symName) {
 #if isLinux
     return dlsym(handler, symName.c_str())
 #else
+	std::cout << "In Windows\n";
 	return GetProcAddress((HINSTANCE)handler, symName.c_str());
 #endif
 
