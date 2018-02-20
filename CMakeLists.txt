@@ -21,6 +21,13 @@ add_executable(zia core/sources/main.cpp
         core/sources/Pipeline.cpp core/includes/Pipeline.hpp
         core/sources/ParserConfig.cpp core/includes/ParserConfig.hpp)
 
+if (WIN32)
+    find_package(Threads REQUIRED)
+    target_link_libraries(zia ${CMAKE_THREAD_LIBS_INIT})
+else ()
+    target_link_libraries(zia pthread)
+endif ()
+
 set(modExampleSourceFiles
         modules/modExample/modExample.cpp
         modules/modExample/modExample.hpp)

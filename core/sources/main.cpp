@@ -1,6 +1,9 @@
 #include <iostream>
+#include <core/includes/Core.hpp>
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Core::Core core;
+
+    core.run();
     return 0;
 }

@@ -1,8 +1,15 @@
 #pragma once
 
+#include <atomic>
 #include "network/Socket.hpp"
 #include "network/Select.hpp"
 #include "Usings.hpp"
+
+#ifdef NET
+std::atomic_bool stop(false);
+#else
+extern std::atomic_bool stop;
+#endif
 
 /// \namespace module
 namespace module {
@@ -18,11 +25,13 @@ namespace module {
 
         void handleConnection(Callback cb);
 
+        void threadLaunching(mysocket::Socket* socket, Callback cb);
+
         std::string httpRead(std::unique_ptr<mysocket::Socket>& socket);
 
     public:
         NetMod() : _socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), _select() {
-            _socket.setAddress(42000, "0.0.0.0");
+            _socket.setAddress(41008, "127.0.0.1");
             _socket.Bind();
             _socket.Listen(42);
         }

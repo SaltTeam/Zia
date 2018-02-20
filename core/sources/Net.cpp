@@ -1,4 +1,7 @@
 #include <ZiaSocket.hpp>
+#include <thread>
+#include <functional>
+#define NET
 #include "Net.hpp"
 
 void module::NetMod::setSelect() {
@@ -10,26 +13,42 @@ void module::NetMod::setSelect() {
 
 std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) {
     std::string msg;
-    char buf[1024];
+    char buf[1025];
     ssize_t ret;
-    while ((ret = socket->Recv(buf, 1024, MSG_WAITALL)) > 0)
+    while ((ret = socket->Recv(buf, 1024, 0)) > 0) {
+        if (ret != 1024) {
+            buf[ret] = '\0';
+            msg += buf;
+            break;
+        }
+        std::cout << "turn" << std::endl;
+        buf[1024] = '\0';
         msg += buf;
+    }
     return (ret < 0) ? nullptr : msg;
 }
 
-void module::NetMod::handleConnection(Callback cb) {
+void module::NetMod::threadLaunching(mysocket::Socket* _client, Callback cb) {
     std::string msg;
     NetInfo inf;
+    std::unique_ptr<mysocket::Socket> client(_client);
+
+    if ((msg = httpRead(client)).empty())
+        return;
+    Raw rawMsg;
+    for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));
+    inf.sock = new ZiaSocket(client);
+    cb(rawMsg, inf);
+}
+
+void module::NetMod::handleConnection(Callback cb) {
+
     if (_select.isFdSetRead(_socket.getSocketFd())) {
-        std::unique_ptr<mysocket::Socket> client(_socket.Accept());
+        auto* client = _socket.Accept();
         if (!client)
             return;
-        if ((msg = httpRead(client)).empty())
-            return;
-        Raw rawMsg;
-        for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));
-        inf.sock = new ZiaSocket(client);
-        cb(rawMsg, inf);
+        std::thread t(&module::NetMod::threadLaunching, std::ref(*this), client, cb);
+        t.detach();
     }
 }
 
