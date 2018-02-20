@@ -18,8 +18,8 @@ bool modExample::perform() {
         this->response
                 ->setStatus(200, "OK")
                 ->addHeader("Set-Cookie", "test")
-                ->addHeader("Content-Length", std::to_string(this->conf.get_at("message")->get<std::string>().length()))
-                ->setStandardData(this->conf.get_at("message")->get<std::string>());
+                ->addHeader("Content-Length", std::to_string(this->conf.get_at("message").get<std::string>().length()))
+                ->setStandardData(this->conf.get_at("message").get<std::string>());
     }
     catch (zia::apipp::Conf::InvalidAccess const& e) {
 		(void)(e);
