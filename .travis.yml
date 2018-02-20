@@ -1,9 +1,12 @@
 sudo: required
 
+env:
+  - TRAVIS=1
+
 before_install:
-    # C++17
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-    - sudo apt-get update -qq
+  # C++17
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
 
 # Enable C++ support
 language: cpp
@@ -22,4 +25,9 @@ install:
 script:
   - mkdir build
   - cd build
-  - cmake .. && make modExample
+  - cmake ..
+  - make modExample
+  - make modStaticFiles
+  - make test_modStaticFiles
+  - cd ..
+  - build/test_modStaticFiles
