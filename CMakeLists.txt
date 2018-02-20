@@ -19,11 +19,15 @@ set(API_SOURCES
         sza-plus-plus/api/pp/http.hpp
         sza-plus-plus/api/pp/net.hpp)
 
-add_executable(zia core/sources/main.cpp
 
+add_executable(zia core/sources/main.cpp
         ${API_SOURCES}
+        
+        core/sources/main.cpp
 
         core/includes/Usings.hpp
+        core/sources/Library.cpp
+        core/includes/Library.hpp
         core/sources/Core.cpp core/includes/Core.hpp
         core/sources/Pipeline.cpp core/includes/Pipeline.hpp)
 
