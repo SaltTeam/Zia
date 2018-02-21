@@ -31,7 +31,7 @@ namespace module {
 
     public:
         NetMod() : _socket(AF_INET, SOCK_STREAM, IPPROTO_TCP), _select() {
-            _socket.setAddress(41008, "127.0.0.1");
+            _socket.setAddress(8080, "127.0.0.1");
             _socket.Bind();
             _socket.Listen(42);
         }

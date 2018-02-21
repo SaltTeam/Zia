@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Usings.hpp"
-#include "Net.hpp"
+#include "ModNet.hpp"
 
 //class NetTest : Net {
 //public:

@@ -14,12 +14,14 @@ add_executable(zia core/sources/main.cpp
         core/includes/network/Select.hpp core/sources/network/Select.cpp
         core/includes/network/Socket.hpp core/sources/network/Socket.cpp
         core/includes/network/SocketException.hpp core/sources/network/SocketException.cpp
-        core/includes/Net.hpp core/sources/Net.cpp
+        core/includes/ModNet.hpp core/sources/ModNet.cpp
         core/includes/ZiaSocket.hpp
         core/includes/Usings.hpp
         core/sources/Core.cpp core/includes/Core.hpp
         core/sources/Pipeline.cpp core/includes/Pipeline.hpp
-        core/sources/ParserConfig.cpp core/includes/ParserConfig.hpp)
+        core/sources/ParserConfig.cpp core/includes/ParserConfig.hpp
+        core/sources/Processing.cpp core/includes/Processing.hpp
+        core/sources/Utils.cpp core/includes/Utils.hpp)
 
 if (WIN32)
     find_package(Threads REQUIRED)

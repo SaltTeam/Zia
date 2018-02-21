@@ -2,7 +2,7 @@
 #include <thread>
 #include <functional>
 #define NET
-#include "Net.hpp"
+#include "ModNet.hpp"
 
 void module::NetMod::setSelect() {
     _select.clearExceptFd();
@@ -65,6 +65,7 @@ bool module::NetMod::send(zia::api::ImplSocket *sock, const Raw &resp) {
     std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
                    [](auto c) { return static_cast<char>(c); });
     sock->sendMessage(msg);
+    return true;
 }
 
 bool module::NetMod::config(const zia::api::Conf &conf) {
