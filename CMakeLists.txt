@@ -49,6 +49,12 @@ set(modStaticFilesSourceFiles
 
 add_library(modStaticFiles SHARED ${modStaticFilesSourceFiles})
 
+set(modPhpCgiSourceFiles
+        modules/modPhpCgi/modPhpCgi.cpp
+        modules/modPhpCgi/modPhpCgi.h)
+
+add_library(modPhpCgi SHARED ${modPhpCgiSourceFiles})
+
 #######################
 #       !Modules      #
 #######################
