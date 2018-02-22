@@ -10,7 +10,7 @@ namespace core {
     public:
         static Request parseRequest(Raw &req);
 
-        static void createResponse(Raw &dest, Response &response);
+        static Raw createResponse(Response &response);
     };
 
 }

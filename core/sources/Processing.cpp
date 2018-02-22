@@ -2,6 +2,8 @@
 #include "Processing.hpp"
 #include "Utils.hpp"
 
+using namespace std::literals::string_literals;
+
 namespace core {
     Request Processing::parseRequest(Raw &req) {
         std::string msg;
@@ -49,7 +51,7 @@ namespace core {
 
         Request request{version, method, uri};
 
-        int i;
+        unsigned i;
         for (i = 1; i < lines.size() && !lines[i].empty(); i++) {
             auto h = Utils::split(lines[i], ": ");
             auto values = Utils::split(h[1], ',');
@@ -71,7 +73,34 @@ namespace core {
         return request;
     }
 
-    void Processing::createResponse(Raw &dest, Response &response) {
+    Raw Processing::createResponse(Response &response) {
+        std::string resp;
+        switch (response.version) {
+            case zia::api::http::Version::http_0_9:
+                resp = "HTTP/0.9";
+                break;
+            case zia::api::http::Version::http_2_0:
+                resp = "HTTP/2.0";
+                break;
+            case zia::api::http::Version::http_1_0:
+                resp = "HTTP/1.0";
+                break;
+            case zia::api::http::Version::http_1_1:
+            default:
+                resp = "HTTP/1.1";
+                break;
+        }
+        resp += " "s + std::to_string(response.statusCode) + " "s + response.statusReason + "\r\n";
+        for (const auto &entry: response.headers) {
+            resp += entry.first + " "s + Utils::join(entry.second, ",") + "\r\n";
+        }
+        resp += "\r\n";
+        resp += response.body;
 
+        Raw rawResp;
+        std::transform(resp.begin(), resp.end(), std::back_inserter(rawResp),
+                       [](auto c) { return static_cast<std::byte>(c); });
+
+        return rawResp;
     }
 }
