@@ -8,7 +8,7 @@ namespace core {
     Request Processing::parseRequest(Raw &req) {
         std::string msg;
         std::transform(req.begin(), req.end(), std::back_inserter(msg),
-                       [](auto c) { return static_cast<char>(c); });
+                       [](auto &c) { return static_cast<char>(c); });
 
         auto lines = Utils::split(msg, "\r\n");
 
@@ -68,7 +68,7 @@ namespace core {
         std::cout << body << std::endl;
 
         std::transform(body.begin(), body.end(), std::back_inserter(request.rawBody),
-                       [](auto c) { return static_cast<std::byte>(c); });
+                       [](auto &c) { return static_cast<std::byte>(c); });
 
         return request;
     }
@@ -99,7 +99,7 @@ namespace core {
 
         Raw rawResp;
         std::transform(resp.begin(), resp.end(), std::back_inserter(rawResp),
-                       [](auto c) { return static_cast<std::byte>(c); });
+                       [](auto &c) { return static_cast<std::byte>(c); });
 
         return rawResp;
     }
