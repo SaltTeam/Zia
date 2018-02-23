@@ -12,4 +12,6 @@ using NetInfo = zia::api::NetInfo;
 using HttpDuplex = zia::api::HttpDuplex;
 using Module = zia::apipp::Module;
 using Request = zia::apipp::Request;
+using RequestPtr = zia::apipp::RequestPtr;
 using Response = zia::apipp::Response;
+using ResponsePtr = zia::apipp::ResponsePtr;

@@ -1,16 +1,16 @@
 
 #pragma once
 
-#include <Http.hpp>
+#include <http.hpp>
 #include "Usings.hpp"
 
 namespace core {
 
     class Processing {
     public:
-        static Request parseRequest(Raw &req);
+        static RequestPtr parseRequest(Raw &req);
 
-        static Raw createResponse(Response &response);
+        static Raw createResponse(ResponsePtr &response);
     };
 
 }

@@ -5,7 +5,7 @@
 using namespace std::literals::string_literals;
 
 namespace core {
-    Request Processing::parseRequest(Raw &req) {
+    RequestPtr Processing::parseRequest(Raw &req) {
         std::string msg;
         std::transform(req.begin(), req.end(), std::back_inserter(msg),
                        [](auto &c) { return static_cast<char>(c); });
@@ -16,10 +16,6 @@ namespace core {
         std::string sMethod = arg[0];
         std::string uri = arg[1];
         std::string sVersion = arg[2];
-
-        std::cout << "Version: " << sVersion << std::endl;
-        std::cout << "Method: " << sMethod << std::endl;
-        std::cout << "URI: " << uri << std::endl;
 
         zia::api::http::Method method;
         if (sMethod == "GET")
@@ -49,14 +45,14 @@ namespace core {
             version = zia::api::http::Version::http_0_9;
         else throw std::exception();
 
-        Request request{version, method, uri};
+        RequestPtr request = std::make_shared<Request>(version, method, uri);
 
         unsigned i;
         for (i = 1; i < lines.size() && !lines[i].empty(); i++) {
             auto h = Utils::split(lines[i], ": ");
             auto values = Utils::split(h[1], ',');
             for (const auto &val: values)
-                request.headers[h[0]].push_back(val);
+                request->headers[h[0]].push_back(val);
         }
 
         std::vector<std::string> vecBody;
@@ -65,17 +61,15 @@ namespace core {
         }
         std::string body = Utils::join(vecBody, "\r\n");
 
-        std::cout << body << std::endl;
-
-        std::transform(body.begin(), body.end(), std::back_inserter(request.rawBody),
+        std::transform(body.begin(), body.end(), std::back_inserter(request->rawBody),
                        [](auto &c) { return static_cast<std::byte>(c); });
 
         return request;
     }
 
-    Raw Processing::createResponse(Response &response) {
+    Raw Processing::createResponse(ResponsePtr &response) {
         std::string resp;
-        switch (response.version) {
+        switch (response->version) {
             case zia::api::http::Version::http_0_9:
                 resp = "HTTP/0.9";
                 break;
@@ -90,12 +84,12 @@ namespace core {
                 resp = "HTTP/1.1";
                 break;
         }
-        resp += " "s + std::to_string(response.statusCode) + " "s + response.statusReason + "\r\n";
-        for (const auto &entry: response.headers) {
-            resp += entry.first + " "s + Utils::join(entry.second, ",") + "\r\n";
+        resp += " "s + std::to_string(response->statusCode) + " "s + response->statusReason + "\r\n";
+        for (const auto &entry: response->headers) {
+            resp += entry.first + ": "s + Utils::join(entry.second, ",") + "\r\n";
         }
         resp += "\r\n";
-        resp += response.body;
+        resp += response->body;
 
         Raw rawResp;
         std::transform(resp.begin(), resp.end(), std::back_inserter(rawResp),

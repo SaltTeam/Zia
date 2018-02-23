@@ -125,7 +125,7 @@ ConfElem ParserConfig::parse(std::string const &path)
 
 	chooseCorrectFunction(parsed, conf);
 
-	std::cout << conf << std::endl;
+//	std::cout << conf << std::endl;
 
 	return conf;
 }
