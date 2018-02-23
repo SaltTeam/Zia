@@ -5,6 +5,17 @@
   ],
   "virtualhost": [
     {
+      "network": "netSsl",
+      "port": 443,
+      "modules": [
+        {
+          "name": "php-cgi",
+          "settings": {
+          }
+        }
+      ]
+    },
+    {
       "network": "standard",
       "port": 80,
       "modules": [
@@ -12,17 +23,6 @@
           "name": "modRedirect",
           "settings": {
             "link": ":443"
-          }
-        }
-      ]
-    },
-    {
-      "network": "netSsl",
-      "port": 443,
-      "modules": [
-        {
-          "name": "php-cgi",
-          "settings": {
           }
         }
       ]

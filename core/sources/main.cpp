@@ -1,8 +1,7 @@
-#ifdef WIN32
-#include <Windows.h>
-#endif
+#include <network/Addr.hpp>
 #include <iostream>
 #include <core/includes/Core.hpp>
+#include <wait.h>
 #include "ParserConfig.hpp"
 
 static void init() {
@@ -25,9 +24,10 @@ static void end() {
 
 int main() {
 
+    init();
 
     ParserConfig parser;
-    auto conf = parser.parse("./json_test");
+    auto conf = parser.parse("./config.json");
 
     auto paths = conf["module_path"];
     auto virtualHosts = conf["virtualhost"];
@@ -39,37 +39,32 @@ int main() {
             for (auto &module : (*virtualHost)["modules"].get<std::shared_ptr<zia::apipp::ConfArray>>()->elems)
             {
             #ifdef WIN32
-                STARTUPINFO si;
-                PROCESS_INFORMATION pi;
-
-                ZeroMemory( &si, sizeof(si) );
-                si.cb = sizeof(si);
-                ZeroMemory( &pi, sizeof(pi) );
-                if (!CreateProcess
-                        (
-                            TEXT("Zia"),
-                            NULL,NULL,NULL,FALSE,
-                            CREATE_NEW_CONSOLE,
-                            NULL,NULL,
-                            &si,
-                            &pi
-                        )
-                   )
-                {
-                    std::cout << "Unable to execute." << std::endl;
-                }
             #else
-                fork();
+                pid_t pid = fork();
+                if (pid == -1)
+                {
+
+                }
+                else if (pid == 0)
+                {
+
+
+                    Core::Core core;
+                    core.run();
+
+                    end();
+                    exit(0);
+                }
+                else
+                {
+                    int wstatus;
+                    waitpid(pid, &wstatus, WCONTINUED);
+                }
             #endif
                 std::cout << (*module)["name"].get<std::string>() << std::endl;
             }
         }
     }
-
-    init();
-
-    Core::Core core;
-    core.run();
 
     end();
     return 0;
