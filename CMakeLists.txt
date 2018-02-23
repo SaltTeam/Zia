@@ -9,6 +9,7 @@ include_directories(
         sza-plus-plus/api/pp
         core/includes
         modules/
+        nlohmann/
         .
 )
 
