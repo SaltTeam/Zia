@@ -46,7 +46,7 @@ if (WIN32)
     find_package(Threads REQUIRED)
     target_link_libraries(zia ${CMAKE_THREAD_LIBS_INIT})
 else ()
-    target_link_libraries(zia pthread)
+    target_link_libraries(zia pthread dl)
 endif ()
 
 #######################
