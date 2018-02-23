@@ -54,15 +54,15 @@ void ParserConfig::manageValue(json::value_type &value, zia::apipp::ConfElem &el
 {
 	if (value.is_string())
 	{
-		value = cleanString(static_cast<std::string>(value));
-		putValueInElem(static_cast<std::string>(value), elem, key);
+		value = cleanString(value.get<std::string>());
+		putValueInElem(value.get<std::string>(), elem, key);
 	}
 	else if (value.is_boolean())
-		putValueInElem(static_cast<bool>(value), elem, key);
+		putValueInElem(value.get<bool>(), elem, key);
 	else if (value.is_number_integer())
-		putValueInElem(static_cast<long long int>(value), elem, key);
+		putValueInElem(value.get<long long int>(), elem, key);
 	else if (value.is_number_float())
-		putValueInElem(static_cast<double>(value), elem, key);
+		putValueInElem(value.get<double>(), elem, key);
 }
 
 void ParserConfig::putValues(json::object_t object, ConfElem &elem, std::string const & key) const
@@ -104,9 +104,9 @@ void ParserConfig::chooseCorrectFunction(json::value_type &value, zia::apipp::Co
 	if (value.is_null())
 	{ }
 	else if (value.is_object())
-		putValues(static_cast<json::object_t>(value), elem, key);
+		putValues(value.get<json::object_t>(), elem, key);
 	else if (value.is_array())
-		putValues(static_cast<json::array_t>(value), elem, key);
+		putValues(value.get<json::array_t>(), elem, key);
 	else
 		manageValue(value, elem, key);
 }
