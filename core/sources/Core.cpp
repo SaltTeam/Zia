@@ -22,7 +22,8 @@ namespace Core {
             response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
             response->headers["Content-Type"].push_back("text/html");
             response->headers["Server"].push_back("Zia Httpd Server");
-
+            response->headers["Connection"].push_back("close");
+            
             Raw resp = core::Processing::createResponse(response);
 
             std::string msg;

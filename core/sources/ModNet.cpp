@@ -4,6 +4,16 @@
 #include "ZiaSocket.hpp"
 #include "ModNet.hpp"
 
+bool module::NetMod::run(Callback cb) {
+    for (;;) {
+        setSelect();
+        std::cout << "will wait" << std::endl;
+        _select.wait();
+        std::cout << "wait terminated" << std::endl;
+        handleConnection(cb);
+    }
+}
+
 void module::NetMod::setSelect() {
     _select.clearExceptFd();
     _select.clearReadFd();
@@ -15,13 +25,12 @@ std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) 
     std::string msg;
     char buf[1025];
     ssize_t ret;
-    while ((ret = socket->Recv(buf, 1024, 0)) > 0) {
+    while ((ret = socket->Recv(buf, 1024, 0)) >= 0) {
         if (ret != 1024) {
             buf[ret] = '\0';
             msg += buf;
             break;
         }
-        std::cout << "turn" << std::endl;
         buf[1024] = '\0';
         msg += buf;
     }
@@ -29,34 +38,30 @@ std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) 
 }
 
 void module::NetMod::threadLaunching(mysocket::Socket* _client, Callback cb) {
+    std::cout << "thread is launched" << std::endl;
     std::string msg;
     NetInfo inf;
     std::unique_ptr<mysocket::Socket> client(_client);
 
     if ((msg = httpRead(client)).empty())
         return;
+    std::cout << "has read new stuff" << std::endl;
     Raw rawMsg;
     for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));
     inf.sock = new ZiaSocket(client);
+    std::cout << "Callback is called" << std::endl;
     cb(rawMsg, inf);
 }
 
 void module::NetMod::handleConnection(Callback cb) {
-
+    std::cout << "enter handle connect" << std::endl;
     if (_select.isFdSetRead(_socket.getSocketFd())) {
         auto* client = _socket.Accept();
-        if (!client)
+        if (client == nullptr)
             return;
+        std::cout << "new client created" << std::endl;
         std::thread t(&module::NetMod::threadLaunching, std::ref(*this), client, cb);
         t.detach();
-    }
-}
-
-bool module::NetMod::run(Callback cb) {
-    for (;;) {
-        setSelect();
-        _select.wait();
-        handleConnection(cb);
     }
 }
 
