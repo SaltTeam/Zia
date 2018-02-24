@@ -14,9 +14,10 @@ namespace Core {
         auto f = std::function<void(Raw, NetInfo)>(
                 std::bind(&Core::runPipeline, this, std::placeholders::_1, std::placeholders::_2));
         net->run(f);
+        std::cout << "after run" << std::endl;
     }
 
-    void Core::setNet(zia::api::Net *newNet) {
+    void Core::setNet(module::NetMod *newNet) {
         net = newNet;
     }
 

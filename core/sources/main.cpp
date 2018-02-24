@@ -5,7 +5,7 @@
 #include <wait.h>
 
 typedef zia::api::Module*(*moduleEntryPoint)() ;
-typedef zia::api::Net*(*netEntryPoint)(unsigned short) ;
+typedef module::NetMod*(*netEntryPoint)(unsigned short) ;
 
 static void init() {
 #ifdef WIN32
@@ -87,12 +87,12 @@ int main() {
                         if (!path.empty()){
                             Library lib = Library(path);
                             auto ptr = reinterpret_cast<netEntryPoint>(lib.loadSym("create"));
-                            auto net = ptr(static_cast<unsigned short>((*virtualHost)["network"].get<long long int>()));
+                            auto net = ptr(static_cast<unsigned short>((*virtualHost)["port"].get<long long int>()));
                             core.setNet(net);
+                            std::cout << "net: " << net << std::endl;
                         }
                     }
                     core.run();
-
 					exit(0);
 				}
 				else

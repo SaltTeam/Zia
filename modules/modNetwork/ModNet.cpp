@@ -59,8 +59,11 @@ void module::NetMod::handleConnection(Callback cb) {
 
 bool module::NetMod::run(Callback cb) {
     for (;;) {
+        std::cout << "toto" << std::endl;
         setSelect();
+        std::cout << "titi" << std::endl;
         _select.wait();
+        std::cout << "tata" << std::endl;
         handleConnection(cb);
     }
 }
@@ -85,9 +88,9 @@ extern "C" {
 #ifdef WIN32
 __declspec(dllexport) zia::api::Net* create(unsigned short port) {
 #else
-zia::api::Net* create(unsigned short port) {
+module::NetMod* create(unsigned short port) {
 #endif
-    zia::api::Net* mod = nullptr;
+    module::NetMod* mod = nullptr;
     try {
         mod = new module::NetMod(port);
     }
