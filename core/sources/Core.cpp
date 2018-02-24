@@ -5,6 +5,11 @@
 
 namespace Core {
 
+    Core::Core(Pipeline const &value)
+    : pipeline(value) {
+
+    }
+
     void Core::Core::run() {
         auto f = std::function<void(Raw, NetInfo)>(
                 std::bind(&Core::runPipeline, this, std::placeholders::_1, std::placeholders::_2));

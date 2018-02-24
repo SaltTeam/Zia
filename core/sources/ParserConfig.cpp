@@ -144,7 +144,10 @@ std::string ParserConfig::getFileContent(std::string const &path) const
 		file.close();
     }
     else
+	{
+		file.close();
 		std::cerr << "Cannot open file '" + path + "'" << std::endl;
+	}
 
     return content;
 }
