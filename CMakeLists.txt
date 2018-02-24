@@ -73,6 +73,18 @@ set(modPhpCgiSourceFiles
 
 add_library(modPhpCgi SHARED ${modPhpCgiSourceFiles})
 
+set(modNetworkSourceFiles
+        modules/modNetwork/ModNet.cpp
+        modules/modNetwork/ModNet.hpp
+        modules/modNetwork/ZiaSocket.hpp
+        modules/modNetwork/lib/sources/Addr.cpp
+        modules/modNetwork/lib/sources/Select.cpp
+        modules/modNetwork/lib/sources/Socket.cpp
+        modules/modNetwork/lib/sources/SocketException.cpp
+        )
+
+add_library(modNetwork SHARED ${modNetworkSourceFiles})
+
 #######################
 #       !Modules      #
 #######################
@@ -100,4 +112,5 @@ if (WIN32)
     target_compile_options(zia PRIVATE /std:c++latest)
     target_compile_options(modExample PRIVATE /std:c++latest)
     target_compile_options(modStaticFiles PRIVATE /std:c++latest)
+    target_compile_options(modNetwork PRIVATE /std:c++latest)
 endif()
