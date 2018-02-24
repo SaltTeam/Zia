@@ -13,7 +13,11 @@ namespace Core {
     void Core::Core::run() {
         auto f = std::function<void(Raw, NetInfo)>(
                 std::bind(&Core::runPipeline, this, std::placeholders::_1, std::placeholders::_2));
-        net.run(f);
+        net->run(f);
+    }
+
+    void Core::setNet(zia::api::Net *newNet) {
+        net = newNet;
     }
 
     void Core::runPipeline(Raw req, NetInfo netInfo) {
@@ -36,7 +40,7 @@ namespace Core {
                            [](auto &c) { return static_cast<char>(c); });
             std::cout << msg << std::endl;
 
-            net.send(netInfo.sock, resp);
+            net->send(netInfo.sock, resp);
         } catch (std::exception &e) {
             std::cout << "Exception: " << e.what() << std::endl;
         }

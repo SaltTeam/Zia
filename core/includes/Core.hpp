@@ -19,11 +19,12 @@
 namespace Core {
     class Core {
     private:
-        module::NetMod net;
+        zia::api::Net *net;
         Pipeline pipeline;
 
     public:
         explicit Core(Pipeline const &value);
+        void setNet(zia::api::Net *newNet);
         void run();
 
     private:
