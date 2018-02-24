@@ -69,7 +69,7 @@ add_library(modStaticFiles SHARED ${modStaticFilesSourceFiles})
 
 set(modPhpCgiSourceFiles
         modules/modPhpCgi/modPhpCgi.cpp
-        modules/modPhpCgi/modPhpCgi.h)
+        modules/modPhpCgi/modPhpCgi.hpp)
 
 add_library(modPhpCgi SHARED ${modPhpCgiSourceFiles})
 
