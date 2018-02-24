@@ -1,32 +1,7 @@
 
 #include "Core.hpp"
 
-bool NetTest::config(const zia::api::Conf &conf) {
-    return true;
-}
-
-bool NetTest::run(Net::Callback cb) {
-    while (true) {
-        std::string msg;
-        std::cin >> msg;
-        std::cout << "Receive message : " << msg << std::endl;
-        Raw rawMsg;
-        for (auto &c: msg) rawMsg.push_back(static_cast<std::byte>(c));
-        cb(rawMsg, NetInfo());
-    }
-}
-
-bool NetTest::send(zia::api::ImplSocket *sock, const Raw &resp) {
-    std::string msg;
-    std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
-                   [](auto c) { return static_cast<char>(c); });
-    std::cout << "Send message : " << msg << std::endl;
-    return true;
-}
-
-bool NetTest::stop() {
-    return true;
-}
+#include "Processing.hpp"
 
 namespace Core {
 
@@ -37,14 +12,27 @@ namespace Core {
     }
 
     void Core::runPipeline(Raw req, NetInfo netInfo) {
-        std::string msg;
-        std::transform(req.begin(), req.end(), std::back_inserter(msg),
-                       [](auto c) { return static_cast<char>(c); });
-        std::cout << "Pipeline with : " << msg << std::endl;
+        try {
+            RequestPtr request = core::Processing::parseRequest(req);
+            ResponsePtr response = std::make_shared<Response>(*request);
 
-        Raw resp;
-        std::transform(msg.begin(), msg.end(), std::back_inserter(resp),
-                       [](auto c) { return static_cast<std::byte>(c); });
-        net.send(netInfo.sock, resp);
+            response->statusCode = 200;
+            response->statusReason = "OK";
+            response->body = "Hello world!";
+            response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
+            response->headers["Content-Type"].push_back("text/html");
+            response->headers["Server"].push_back("Zia Httpd Server");
+
+            Raw resp = core::Processing::createResponse(response);
+
+            std::string msg;
+            std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
+                           [](auto &c) { return static_cast<char>(c); });
+            std::cout << msg << std::endl;
+
+            net.send(netInfo.sock, resp);
+        } catch (std::exception &e) {
+            std::cout << "Exception: " << e.what() << std::endl;
+        }
     }
 }

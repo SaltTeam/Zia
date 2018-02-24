@@ -11,6 +11,6 @@ namespace Core {
     public:
         explicit Pipeline(std::vector<Module *> &modules);
 
-        void run(HttpDuplex &httpDuplex);
+        void run(RequestPtr &request, ResponsePtr &response, NetInfo &netInfo);
     };
 }

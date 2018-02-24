@@ -1,40 +1,38 @@
-#if isLinux
+#ifdef WIN32
+#include <Windows.h>
+#else
 #include <dlfcn.h>
 #endif
-
-#include <Windows.h>
 #include "Library.hpp"
 
 Library::Library(std::string const& libName) {
-#if isLinux
-    handler = dlopen(libName.c_str(), RTLD_LAZY);
-    if (handler == NULL)
-        std::cout << dlerror() << std::endl;
-#else
+#ifdef WIN32
     handler = LoadLibrary(libName.c_str());
     if (handler == NULL)
         std::cout << "unable to load dll" << std::endl;
+#else
+    handler = dlopen(libName.c_str(), RTLD_LAZY);
+    if (handler == NULL)
+        std::cout << dlerror() << std::endl;
 #endif
 }
 
 Library::~Library() {
-#if isLinux
-    if (handler != NULL)
-        dlclose(handler);
-#else
+#ifdef WIN32
 	if (handler != NULL)
 		FreeLibrary((HINSTANCE)(handler));
+#else
+    if (handler != NULL)
+        dlclose(handler);
 #endif
 }
 
 void* Library::loadSym(std::string const& symName) {
-#if isLinux
-    return dlsym(handler, symName.c_str())
-#else
-	std::cout << "In Windows\n";
+#ifdef WIN32
 	return GetProcAddress((HINSTANCE)handler, symName.c_str());
+#else
+    return dlsym(handler, symName.c_str());
 #endif
-
 }
 
 void* Library::getHandler() {
@@ -42,14 +40,14 @@ void* Library::getHandler() {
 }
 
 bool Library::loadLibrary(std::string const& libName) {
-#if isLinux
+#ifdef WIN32
+	handler = LoadLibrary(libName.c_str());
+	if (handler == NULL)
+		return false;
+#else
     handler = dlopen(libName.c_str(), RTLD_LAZY);
     if (handler == NULL)
         return false;
     return true;
-#else
-	handler = LoadLibrary(libName.c_str());
-	if (handler == NULL)
-		return false;
 #endif
 }
