@@ -5,6 +5,7 @@
 #include <wait.h>
 
 typedef zia::api::Module*(*moduleEntryPoint)() ;
+typedef zia::api::Net*(*netEntryPoint)(unsigned short) ;
 
 static void init() {
 #ifdef WIN32
@@ -77,7 +78,20 @@ int main() {
 					}
 
 					Core::Core core = Core::Core(Core::Pipeline(modules));
-					core.run();
+                    if ((*virtualHost)["network"].get<std::string>() == "netSsl") {
+
+                    }
+                    else {
+                        std::string path = getCorrectPathOfModuleLinux("libmodNetwork",
+                                                                       paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
+                        if (!path.empty()){
+                            Library lib = Library(path);
+                            auto ptr = reinterpret_cast<netEntryPoint>(lib.loadSym("create"));
+                            auto net = ptr(static_cast<unsigned short>((*virtualHost)["network"].get<long long int>()));
+                            core.setNet(net);
+                        }
+                    }
+                    core.run();
 
 					exit(0);
 				}
@@ -86,6 +100,7 @@ int main() {
 					int wstatus;
 					waitpid(pid, &wstatus, WCONTINUED);
 				}
+
 			#endif
         }
     }
