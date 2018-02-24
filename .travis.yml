@@ -27,6 +27,7 @@ script:
   - cd build
   - cmake ..
   - make modExample
+  - make modNetwork
   - make modStaticFiles
   - make test_modStaticFiles
   - cd ..
