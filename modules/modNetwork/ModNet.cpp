@@ -26,7 +26,6 @@ std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) 
             msg += buf;
             break;
         }
-        std::cout << "turn" << std::endl;
         buf[1024] = '\0';
         msg += buf;
     }
@@ -59,11 +58,8 @@ void module::NetMod::handleConnection(Callback cb) {
 
 bool module::NetMod::run(Callback cb) {
     for (;;) {
-        std::cout << "toto" << std::endl;
         setSelect();
-        std::cout << "titi" << std::endl;
         _select.wait();
-        std::cout << "tata" << std::endl;
         handleConnection(cb);
     }
 }

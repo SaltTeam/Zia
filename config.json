@@ -1,28 +1,17 @@
 {
   "module_path": [
-    "./modules",
+    ".",
     "/var/zia/modules"
   ],
   "virtualhost": [
     {
-      "network": "netSsl",
-      "port": 443,
-      "modules": [
-        {
-          "name": "php-cgi",
-          "settings": {
-          }
-        }
-      ]
-    },
-    {
       "network": "standard",
-      "port": 80,
+      "port": 8080,
       "modules": [
         {
-          "name": "modRedirect",
+          "name": "libmodStaticFiles",
           "settings": {
-            "link": ":443"
+            "basedir": "."
           }
         }
       ]
