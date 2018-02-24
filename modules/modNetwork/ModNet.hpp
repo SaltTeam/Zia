@@ -81,7 +81,7 @@ namespace module {
          * @param cb callback that will be executed when this new thread start
          * @return true if the run is ok false otherwise
          */
-        bool run(Callback cb) override;
+        virtual bool run(Callback cb);
 
         /*!
          * \brief send the response

@@ -85,21 +85,20 @@ int main() {
                         std::string path = getCorrectPathOfModuleLinux("libmodNetwork",
                                                                        paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                         if (!path.empty()){
-							std::cout << path << std::endl;
                             Library lib = Library(path);
                             auto ptr = reinterpret_cast<netEntryPoint>(lib.loadSym("create"));
                             auto net = ptr(static_cast<unsigned short>((*virtualHost)["port"].get<long long int>()));
                             core.setNet(net);
-                        }
+							core.run();
+
+						}
                     }
-                    core.run();
 					exit(0);
 				}
 				else
 				{
 					int wstatus;
 					waitpid(pid, &wstatus, WCONTINUED);
-					std::cout << wstatus << std::endl;
 				}
 
 			#endif
