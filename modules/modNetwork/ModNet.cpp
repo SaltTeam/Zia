@@ -83,7 +83,7 @@ bool module::NetMod::stop() {
 
 extern "C" {
 #ifdef WIN32
-__declspec(dllexport) zia::api::Module* create() {
+__declspec(dllexport) zia::api::Net* create(unsigned short port) {
 #else
 zia::api::Net* create(unsigned short port) {
 #endif
