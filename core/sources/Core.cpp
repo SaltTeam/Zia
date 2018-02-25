@@ -25,14 +25,8 @@ namespace Core {
             RequestPtr request = core::Processing::parseRequest(req);
             ResponsePtr response = std::make_shared<Response>(*request);
 
-            response->statusCode = 200;
-            response->statusReason = "OK";
-            response->body = "Hello world!";
-            response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
-            response->headers["Content-Type"].push_back("text/html");
-            response->headers["Server"].push_back("Zia Httpd Server");
-            response->headers["Connection"].push_back("close");
-            
+            pipeline.run(request, response, netInfo);
+
             Raw resp = core::Processing::createResponse(response);
 
             std::string msg;

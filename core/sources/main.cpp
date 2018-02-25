@@ -73,8 +73,9 @@ int main() {
 							continue;
 						Library library = Library(path);
 						auto ptr = reinterpret_cast<moduleEntryPoint>(library.loadSym("create"));
-						modules.push_back(ptr());
-						std::cout << path << std::endl;
+						auto mod = ptr();
+						mod->config((*module)["settings"].toBasicConfig());
+						modules.push_back(mod);
 					}
 
 					Core::Core core = Core::Core(Core::Pipeline(modules));
@@ -90,7 +91,6 @@ int main() {
                             auto net = ptr(static_cast<unsigned short>((*virtualHost)["port"].get<long long int>()));
                             core.setNet(net);
 							core.run();
-
 						}
                     }
 					exit(0);
