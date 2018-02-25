@@ -27,9 +27,16 @@ namespace Core {
 
             pipeline.run(request, response, netInfo);
 
-            Raw resp = core::Processing::createResponse(response);
+			if (response->headers["Content-Length"].empty())
+				response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
+			if (response->headers["Connection"].empty())
+				response->headers["Connection"].push_back("close");
+			if (response->headers["Content-Type"].empty())
+				response->headers["Content-Type"].push_back("text/plain");
 
-            std::string msg;
+			Raw resp = core::Processing::createResponse(response);
+
+			std::string msg;
             std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
                            [](auto &c) { return static_cast<char>(c); });
             std::cout << msg << std::endl;

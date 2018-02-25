@@ -57,6 +57,7 @@ add_library(modExample SHARED ${modExampleSourceFiles})
 set(modStaticFilesSourceFiles
         modules/modStaticFiles/modStaticFiles.cpp
         modules/modStaticFiles/modStaticFiles.hpp
+        sza-plus-plus/api/pp/conf.cpp
         modules/MIME_types.cpp)
 
 add_library(modStaticFiles SHARED ${modStaticFilesSourceFiles})
