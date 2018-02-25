@@ -3,10 +3,10 @@
 #include "core/includes/Core.hpp"
 #include "Library.hpp"
 
-#ifdef UNIX
-#include <wait.h>
-#else
+#ifdef WIN32
 #include <io.h>
+#else
+#include <wait.h>
 #endif
 
 typedef zia::api::Module *(*moduleEntryPoint)();
@@ -37,13 +37,14 @@ getCorrectPathOfModule(std::string const &name, std::vector<std::shared_ptr<zia:
 
     for (auto &it: paths) {
         if ((*it).getType() == zia::apipp::ConfElem::Type::String) {
-#ifdef UNIX
-            if (access(((*it).get<std::string>() + "/" + name + ".so").c_str(), F_OK) == 0)
-                return (*it).get<std::string>() + "/" + name + ".so";
-#else
+#ifdef WIN32
+
             if (_access(((*it).get<std::string>() + "/" + name + ".dll").c_str(), 06) == 0)
                 return (*it).get<std::string>() + "/" + name + ".dll";
-
+#else
+            if (access(((*it).get<std::string>() + "/" + name + ".so").c_str(), F_OK) == 0)
+                return (*it).get<std::string>() + "/" + name + ".so";
+#endif
         }
     }
 
