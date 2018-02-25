@@ -34,9 +34,6 @@ bool modPhpCgi::perform() {
     // Construct environment
     std::vector<std::string> aEnv;
 
-    std::cout << "this the body passed to cgi:" << this->request->body << "<end body" << std::endl;
-
-    //todo add header which has be send through the body
     aEnv.emplace_back("GATEWAY_INTERFACE=CGI/1.1");
     aEnv.emplace_back("SERVER_PROTOCOL=HTTP/1.1");
     aEnv.emplace_back("QUERY_STRING=test=querystring");
@@ -78,7 +75,7 @@ bool modPhpCgi::perform() {
         close(pipeForStdOut[1]);
 
         // ecrire sur l'entrée standard du child
-        dprintf(pipeForStdIn[1], "%s", this->request->body);
+        write(pipeForStdIn[1], this->request->body.c_str(), this->request->body.size());
 
         // lire l'output du child
         std::string response;
