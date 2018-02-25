@@ -23,6 +23,7 @@ bool modStaticFiles::perform() {
         this->response
                 ->setStatus(500, "Internal Server Error")
                 ->addHeader("Content-Length", "45")
+                ->addHeader("Content-Type", "text/html")
                 ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
         return false;
     }
@@ -40,6 +41,7 @@ bool modStaticFiles::perform() {
         this->response
                 ->setStatus(404, "Not Found")
                 ->addHeader("Content-Length", "33")
+                ->addHeader("Content-Type", "text/html")
                 ->setStandardData("<h1>404</h1><br/><p>Not Found</p>");
         return false;
     }

@@ -493,6 +493,7 @@ std::map<std::string, std::string> mime_types = {
         {std::string(".sv4crc"),    "application/x-sv4crc"},
         {std::string(".svf"),       "image/vnd.dwg"},
         {std::string(".svf"),       "image/x-dwg"},
+        {std::string(".svg"),       "image/svg+xml"},
         {std::string(".svr"),       "application/x-world"},
         {std::string(".svr"),       "x-world/x-svr"},
         {std::string(".swf"),       "application/x-shockwave-flash"},
