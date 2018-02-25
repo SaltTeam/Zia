@@ -1,9 +1,15 @@
+#ifdef WIN32
+#include "stdafx.h"
+#include <Windows.h>
+#endif
+
 #include <fstream>
 #include <cstring>
 #include <unistd.h>
 #include <exception>
 #include <wait.h>
 #include "sza-plus-plus/api/module.h"
+#include "Utils.hpp"
 #include "modules/MIME_types.hpp"
 #include "modPhpCgi.hpp"
 
@@ -28,11 +34,14 @@ bool modPhpCgi::perform() {
     // Construct environment
     std::vector<std::string> aEnv;
 
+    std::cout << "this the body passed to cgi:" << this->request->body << "<end body" << std::endl;
+
     //todo add header which has be send through the body
     aEnv.emplace_back("GATEWAY_INTERFACE=CGI/1.1");
     aEnv.emplace_back("SERVER_PROTOCOL=HTTP/1.1");
     aEnv.emplace_back("QUERY_STRING=test=querystring");
     aEnv.emplace_back("REDIRECT_STATUS=200");
+    aEnv.push_back("SCRIPT_FILENAME=" + this->conf.get_at("basedir").get<std::string>() + this->request->uri);
     aEnv.emplace_back("REDIRECT=true");
     aEnv.emplace_back("REQUEST_METHOD=POST");
     aEnv.emplace_back("CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8");
@@ -46,8 +55,6 @@ bool modPhpCgi::perform() {
     /*
      * End construct
      */
-
-
 
     /*
      * Construct the program exec
@@ -89,12 +96,26 @@ bool modPhpCgi::perform() {
         if (ret == -1)
             throw std::runtime_error("error on read result of php-cgi action");
 
-        //todo parse response cause actual had the headers
-        this->response->body = response;
 
-        // debug
-        std::cout << "Cgi response:\n" << response << std::endl;
-        // endDbug
+        // parse cgi response
+        auto lines = core::Utils::split(response, "\r\n");
+
+        unsigned i;
+        for (i = 0; i < lines.size() && !lines[i].empty(); i++) {
+            auto h = core::Utils::split(lines[i], ": ");
+            auto values = core::Utils::split(h[1], ',');
+            for (const auto &val: values)
+                this->response->headers[h[0]].push_back(val);
+        }
+        this->response->statusCode = 200;
+        this->response->statusReason = "OK";
+
+        std::vector<std::string> vecBody;
+        for (i += 1; i < lines.size(); i++) {
+            vecBody.push_back(lines[i]);
+        }
+        std::string body = core::Utils::join(vecBody, "\r\n");
+        this->response->body = body;
 
         // wait le child
         waitpid(pid, &status, 0);
@@ -110,4 +131,21 @@ bool modPhpCgi::perform() {
 
         res = execve(sysCline[0], sysCline, sysEnv);
     }
+}
+
+extern "C" {
+#ifdef WIN32
+__declspec(dllexport) zia::api::Module* create() {
+#else
+zia::api::Module* create() {
+#endif
+    zia::api::Module* mod = nullptr;
+    try {
+        mod = new modPhpCgi();
+    }
+    catch (...) {
+        std::cerr << "Unable to create module: modPhpCgi" << std::endl;
+    }
+    return mod;
+}
 }

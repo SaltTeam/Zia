@@ -64,7 +64,9 @@ add_library(modStaticFiles SHARED ${modStaticFilesSourceFiles})
 
 set(modPhpCgiSourceFiles
         modules/modPhpCgi/modPhpCgi.cpp
-        modules/modPhpCgi/modPhpCgi.hpp)
+        modules/modPhpCgi/modPhpCgi.hpp
+        sza-plus-plus/api/pp/conf.cpp
+        core/sources/Utils.cpp core/includes/Utils.hpp)
 
 add_library(modPhpCgi SHARED ${modPhpCgiSourceFiles})
 

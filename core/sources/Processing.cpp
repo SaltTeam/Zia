@@ -63,7 +63,7 @@ namespace core {
 
         std::transform(body.begin(), body.end(), std::back_inserter(request->rawBody),
                        [](auto &c) { return static_cast<std::byte>(c); });
-
+        request->body = body;
         return request;
     }
 

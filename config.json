@@ -9,10 +9,10 @@
       "port": 8080,
       "modules": [
         {
-          "name": "libmodStaticFiles",
-          "settings": {
-            "basedir": "."
-          }
+            "name": "libmodPhpCgi",
+            "settings": {
+              "basedir": "."
+            }
         }
       ]
     }
