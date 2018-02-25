@@ -5,10 +5,19 @@
 
 namespace Core {
 
+    Core::Core(Pipeline const &value)
+    : pipeline(value) {
+
+    }
+
     void Core::Core::run() {
         auto f = std::function<void(Raw, NetInfo)>(
                 std::bind(&Core::runPipeline, this, std::placeholders::_1, std::placeholders::_2));
-        net.run(f);
+        net->run(f);
+    }
+
+    void Core::setNet(module::NetMod *newNet) {
+        net = newNet;
     }
 
     void Core::runPipeline(Raw req, NetInfo netInfo) {
@@ -22,7 +31,8 @@ namespace Core {
             response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
             response->headers["Content-Type"].push_back("text/html");
             response->headers["Server"].push_back("Zia Httpd Server");
-
+            response->headers["Connection"].push_back("close");
+            
             Raw resp = core::Processing::createResponse(response);
 
             std::string msg;
@@ -30,7 +40,7 @@ namespace Core {
                            [](auto &c) { return static_cast<char>(c); });
             std::cout << msg << std::endl;
 
-            net.send(netInfo.sock, resp);
+            net->send(netInfo.sock, resp);
         } catch (std::exception &e) {
             std::cout << "Exception: " << e.what() << std::endl;
         }

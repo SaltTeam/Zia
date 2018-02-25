@@ -26,7 +26,6 @@ std::string module::NetMod::httpRead(std::unique_ptr<mysocket::Socket>& socket) 
             msg += buf;
             break;
         }
-        std::cout << "turn" << std::endl;
         buf[1024] = '\0';
         msg += buf;
     }
@@ -85,9 +84,9 @@ extern "C" {
 #ifdef WIN32
 __declspec(dllexport) zia::api::Net* create(unsigned short port) {
 #else
-zia::api::Net* create(unsigned short port) {
+module::NetMod* create(unsigned short port) {
 #endif
-    zia::api::Net* mod = nullptr;
+    module::NetMod* mod = nullptr;
     try {
         mod = new module::NetMod(port);
     }

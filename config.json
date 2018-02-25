@@ -1,0 +1,20 @@
+{
+  "module_path": [
+    ".",
+    "/var/zia/modules"
+  ],
+  "virtualhost": [
+    {
+      "network": "standard",
+      "port": 8080,
+      "modules": [
+        {
+          "name": "libmodStaticFiles",
+          "settings": {
+            "basedir": "."
+          }
+        }
+      ]
+    }
+  ]
+}

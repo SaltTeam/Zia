@@ -3,6 +3,7 @@
 
 #include "Usings.hpp"
 #include "ModNet.hpp"
+#include "Pipeline.hpp"
 
 //class NetTest : Net {
 //public:
@@ -18,9 +19,12 @@
 namespace Core {
     class Core {
     private:
-        module::NetMod net;
+        module::NetMod *net;
+        Pipeline pipeline;
 
     public:
+        explicit Core(Pipeline const &value);
+        void setNet(module::NetMod *newNet);
         void run();
 
     private:
