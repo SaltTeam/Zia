@@ -1,0 +1,32 @@
+{
+  "module_path": [
+    ".",
+    "/var/zia/modules"
+  ],
+  "virtualhost": [
+    {
+      "network": "netSsl",
+      "port": 8081,
+      "modules": [
+        {
+          "name": "modStaticFiles",
+          "settings": {
+            "basedir": "."
+          }
+        }
+      ]
+    },
+    {
+      "network": "standard",
+      "port": 8080,
+      "modules": [
+        {
+          "name": "modPhpCgi",
+          "settings": {
+            "basedir": "."
+          }
+        }
+      ]
+    }
+  ]
+}
