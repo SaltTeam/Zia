@@ -3,7 +3,7 @@ project(zia)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -W -Wall -Wextra")
+set(CMAKE_CPP_FLAGS "${CMAKE_CPP_FLAGS} -W -Wall -Wextra -frtti")
 
 include_directories(
         sza-plus-plus/api/pp
@@ -99,6 +99,7 @@ else()
 endif()
 
 target_link_libraries(modSSL ${OPENSSL_LIBRARIES})
+endif()
 
 #######################
 #       !Modules      #
@@ -129,5 +130,4 @@ if (WIN32)
     target_compile_options(modStaticFiles PRIVATE /std:c++latest)
     target_compile_options(modNetwork PRIVATE /std:c++latest)
     target_compile_options(modSSL PRIVATE /std:c++latest)
-endif()
 endif()

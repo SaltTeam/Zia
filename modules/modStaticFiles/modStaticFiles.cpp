@@ -3,7 +3,6 @@
 //
 
 #ifdef WIN32
-#include "stdafx.h"
 #include <Windows.h>
 #endif
 

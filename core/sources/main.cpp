@@ -42,8 +42,8 @@ getCorrectPathOfModule(std::string const &name, std::vector<std::shared_ptr<zia:
             if (_access(((*it).get<std::string>() + "/" + name + ".dll").c_str(), 06) == 0)
                 return (*it).get<std::string>() + "/" + name + ".dll";
 #else
-            if (access(((*it).get<std::string>() + "/" + name + ".so").c_str(), F_OK) == 0)
-                return (*it).get<std::string>() + "/" + name + ".so";
+            if (access(("lib" + (*it).get<std::string>() + "/" + name + ".so").c_str(), F_OK) == 0)
+                return "lib" + (*it).get<std::string>() + "/" + name + ".so";
 #endif
         }
     }
@@ -64,9 +64,9 @@ int main() {
     if (virtualHosts.getType() == zia::apipp::ConfElem::Type::Array &&
         paths.getType() == zia::apipp::ConfElem::Type::Array) {
 #ifdef WIN32
-        auto virtualHost = (virtualHosts.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems).begin();
+        auto &virtualHost = (virtualHosts.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems).front();
         std::vector<Module *> modules;
-        for (auto &module : (*virtualHost)["modules"].get<std::shared_ptr<zia::apipp::ConfArray>>()->elems)
+        for (auto &module : ((*virtualHost)["modules"]).get<std::shared_ptr<zia::apipp::ConfArray>>()->elems)
                     {
                         std::string path = getCorrectPathOfModule((*module)["name"].get<std::string>(),
                                                                   paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
@@ -75,8 +75,6 @@ int main() {
                         Library library = Library(path);
                         auto ptr = reinterpret_cast<moduleEntryPoint>(library.loadSym("create"));
                         auto mod = ptr();
-                        if (mod == nullptr)
-                            break;
                         mod->config((*module)["settings"].toBasicConfig());
                         modules.push_back(mod);
                     }
@@ -84,11 +82,11 @@ int main() {
                     Core::Core core = Core::Core(Core::Pipeline(modules));
                     std::string path;
                     if ((*virtualHost)["network"].get<std::string>() == "netSsl") {
-                        path = getCorrectPathOfModule("libmodSSL",
+                        path = getCorrectPathOfModule("modSSL",
                                                       paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     }
                     else {
-                        path = getCorrectPathOfModule("libmodNetwork",
+                        path = getCorrectPathOfModule("modNetwork",
                                                       paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     }
 
@@ -99,6 +97,10 @@ int main() {
                             core.setNet(net);
                             core.run();
                         }
+                    else
+                    {
+                        std::cout << "path is empty" << std::endl;
+                    }
 #else //LINUX
         for (auto &virtualHost : virtualHosts.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems) {
             pid_t pid = fork();
