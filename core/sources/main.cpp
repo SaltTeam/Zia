@@ -2,7 +2,12 @@
 #include "ParserConfig.hpp"
 #include "core/includes/Core.hpp"
 #include "Library.hpp"
+
+#ifdef UNIX
 #include <wait.h>
+#else
+#include <io.h>
+#endif
 
 typedef zia::api::Module *(*moduleEntryPoint)();
 
@@ -27,13 +32,18 @@ static void end() {
 }
 
 std::string const
-getCorrectPathOfModuleLinux(std::string const &name, std::vector<std::shared_ptr<zia::apipp::ConfElem>> paths) {
+getCorrectPathOfModule(std::string const &name, std::vector<std::shared_ptr<zia::apipp::ConfElem>> paths) {
     std::string res;
 
     for (auto &it: paths) {
         if ((*it).getType() == zia::apipp::ConfElem::Type::String) {
+#ifdef UNIX
             if (access(((*it).get<std::string>() + "/" + name + ".so").c_str(), F_OK) == 0)
                 return (*it).get<std::string>() + "/" + name + ".so";
+#else
+            if (_access(((*it).get<std::string>() + "/" + name + ".dll").c_str(), 06) == 0)
+                return (*it).get<std::string>() + "/" + name + ".dll";
+
         }
     }
 
@@ -53,10 +63,12 @@ int main() {
     if (virtualHosts.getType() == zia::apipp::ConfElem::Type::Array &&
         paths.getType() == zia::apipp::ConfElem::Type::Array) {
 #ifdef WIN32
+        auto virtualHost = (virtualHosts.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems).begin();
+        std::vector<Module *> modules;
         for (auto &module : (*virtualHost)["modules"].get<std::shared_ptr<zia::apipp::ConfArray>>()->elems)
                     {
-                        std::string path = getCorrectPathOfModuleLinux((*module)["name"].get<std::string>(),
-                                                                       paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
+                        std::string path = getCorrectPathOfModule((*module)["name"].get<std::string>(),
+                                                                  paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                         if (path.empty())
                             continue;
                         Library library = Library(path);
@@ -71,12 +83,12 @@ int main() {
                     Core::Core core = Core::Core(Core::Pipeline(modules));
                     std::string path;
                     if ((*virtualHost)["network"].get<std::string>() == "netSsl") {
-                        path = getCorrectPathOfModuleLinux("libmodSSL",
-                                                           paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
+                        path = getCorrectPathOfModule("libmodSSL",
+                                                      paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     }
                     else {
-                        path = getCorrectPathOfModuleLinux("libmodNetwork",
-                                                           paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
+                        path = getCorrectPathOfModule("libmodNetwork",
+                                                      paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     }
 
                     if (!path.empty()){
@@ -95,7 +107,7 @@ int main() {
                 std::vector<Module *> modules;
 
                 for (auto &module : (*virtualHost)["modules"].get<std::shared_ptr<zia::apipp::ConfArray>>()->elems) {
-                    std::string path = getCorrectPathOfModuleLinux((*module)["name"].get<std::string>(),
+                    std::string path = getCorrectPathOfModule((*module)["name"].get<std::string>(),
                                                                    paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     if (path.empty())
                         continue;
@@ -111,10 +123,10 @@ int main() {
                 Core::Core core = Core::Core(Core::Pipeline(modules));
                 std::string path;
                 if ((*virtualHost)["network"].get<std::string>() == "netSsl") {
-                    path = getCorrectPathOfModuleLinux("libmodSSL",
+                    path = getCorrectPathOfModule("libmodSSL",
                                                        paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                 } else {
-                    path = getCorrectPathOfModuleLinux("libmodNetwork",
+                    path = getCorrectPathOfModule("libmodNetwork",
                                                        paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                 }
 
@@ -131,8 +143,8 @@ int main() {
                 waitpid(pid, &wstatus, WCONTINUED);
             }
 
-#endif
         }
+#endif
     }
 
     end();
