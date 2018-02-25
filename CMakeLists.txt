@@ -84,6 +84,9 @@ set(modSSLSourceFiles
 
 add_library(modSSL SHARED ${modSSLSourceFiles})
 
+if (WIN32)
+
+else()
 # Search OpenSSL
 find_package(PkgConfig REQUIRED)
 pkg_search_module(OPENSSL REQUIRED openssl)
@@ -126,4 +129,5 @@ if (WIN32)
     target_compile_options(modStaticFiles PRIVATE /std:c++latest)
     target_compile_options(modNetwork PRIVATE /std:c++latest)
     target_compile_options(modSSL PRIVATE /std:c++latest)
+endif()
 endif()
