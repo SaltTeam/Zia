@@ -224,6 +224,7 @@ std::map<std::string, std::string> mime_types = {
         {std::string(".js"),        "application/ecmascript"},
         {std::string(".js"),        "text/javascript"},
         {std::string(".js"),        "text/ecmascript"},
+        {std::string(".json"),      "application/json"},
         {std::string(".jut"),       "image/jutvision"},
         {std::string(".kar"),       "audio/midi"},
         {std::string(".kar"),       "music/x-karaoke"},
