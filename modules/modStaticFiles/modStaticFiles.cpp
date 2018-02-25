@@ -21,8 +21,8 @@ bool modStaticFiles::perform() {
     catch (...) {
         this->response
                 ->setStatus(500, "Internal Server Error")
-                ->addHeader("Content-Length", "45")
-                ->addHeader("Content-Type", "text/html")
+                ->addHeader("Content-length", "45")
+                ->addHeader("Content-type", "text/html")
                 ->setStandardData("<h1>500</h1><br/><p>Internal Server Error</p>");
         return false;
     }
@@ -39,15 +39,15 @@ bool modStaticFiles::perform() {
     catch (...){
         this->response
                 ->setStatus(404, "Not Found")
-                ->addHeader("Content-Length", "33")
-                ->addHeader("Content-Type", "text/html")
+                ->addHeader("Content-length", "33")
+                ->addHeader("Content-type", "text/html")
                 ->setStandardData("<h1>404</h1><br/><p>Not Found</p>");
         return false;
     }
     this->response
             ->setStatus(200, "OK")
-            ->addHeader("Content-Type", GetContentType(uri))
-            ->addHeader("Content-Length", std::to_string(ss.str().length()))
+            ->addHeader("Content-type", GetContentType(uri))
+            ->addHeader("Content-length", std::to_string(ss.str().length()))
             ->setStandardData(ss.str());
     return false;
 }

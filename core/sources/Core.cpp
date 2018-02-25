@@ -25,21 +25,23 @@ namespace Core {
             RequestPtr request = core::Processing::parseRequest(req);
             ResponsePtr response = std::make_shared<Response>(*request);
 
+			response->statusCode = 200;
+			response->statusReason = "OK";
+
             pipeline.run(request, response, netInfo);
 
-			if (response->headers["Content-Length"].empty())
-				response->headers["Content-Length"].push_back(std::to_string(response->body.length()));
+			if (response->headers["Content-length"].empty())
+				response->headers["Content-length"].push_back(std::to_string(response->body.length()));
 			if (response->headers["Connection"].empty())
 				response->headers["Connection"].push_back("close");
-			if (response->headers["Content-Type"].empty())
-				response->headers["Content-Type"].push_back("text/plain");
+			if (response->headers["Content-type"].empty())
+				response->headers["Content-type"].push_back("text/plain");
 
 			Raw resp = core::Processing::createResponse(response);
 
 			std::string msg;
             std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
                            [](auto &c) { return static_cast<char>(c); });
-//            std::cout << msg << std::endl;
 
             net->send(netInfo.sock, resp);
         } catch (std::exception &e) {

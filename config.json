@@ -5,14 +5,26 @@
   ],
   "virtualhost": [
     {
+      "network": "netSsl",
+      "port": 8081,
+      "modules": [
+        {
+          "name": "modStaticFiles",
+          "settings": {
+            "basedir": "."
+          }
+        }
+      ]
+    },
+    {
       "network": "standard",
       "port": 8080,
       "modules": [
         {
-            "name": "libmodPhpCgi",
-            "settings": {
-              "basedir": "."
-            }
+          "name": "modPhpCgi",
+          "settings": {
+            "basedir": "."
+          }
         }
       ]
     }

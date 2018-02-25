@@ -128,6 +128,7 @@ bool modPhpCgi::perform() {
 
         res = execve(sysCline[0], sysCline, sysEnv);
     }
+    return false;
 }
 
 extern "C" {
