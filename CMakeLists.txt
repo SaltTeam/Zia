@@ -74,6 +74,29 @@ set(modNetworkSourceFiles
 
 add_library(modNetwork SHARED ${modNetworkSourceFiles})
 
+set(modSSLSourceFiles
+        modules/modSSL/modSSL.cpp
+        modules/modSSL/modSSL.hpp
+        modules/modSSL/ZiaSocket.hpp
+        modules/modSSL/Select.cpp
+        modules/modSSL/Select.hpp
+        )
+
+add_library(modSSL SHARED ${modSSLSourceFiles})
+
+# Search OpenSSL
+find_package(PkgConfig REQUIRED)
+pkg_search_module(OPENSSL REQUIRED openssl)
+
+if( OPENSSL_FOUND )
+    include_directories(${OPENSSL_INCLUDE_DIRS})
+    message(STATUS "Using OpenSSL ${OPENSSL_VERSION}")
+else()
+    # Error; with REQUIRED, pkg_search_module() will throw an error by it's own
+endif()
+
+target_link_libraries(modSSL ${OPENSSL_LIBRARIES})
+
 #######################
 #       !Modules      #
 #######################
@@ -102,4 +125,5 @@ if (WIN32)
     target_compile_options(modExample PRIVATE /std:c++latest)
     target_compile_options(modStaticFiles PRIVATE /std:c++latest)
     target_compile_options(modNetwork PRIVATE /std:c++latest)
+    target_compile_options(modSSL PRIVATE /std:c++latest)
 endif()

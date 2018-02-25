@@ -39,7 +39,7 @@ namespace Core {
 			std::string msg;
             std::transform(resp.begin(), resp.end(), std::back_inserter(msg),
                            [](auto &c) { return static_cast<char>(c); });
-            std::cout << msg << std::endl;
+//            std::cout << msg << std::endl;
 
             net->send(netInfo.sock, resp);
         } catch (std::exception &e) {

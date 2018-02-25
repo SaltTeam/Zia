@@ -79,20 +79,23 @@ int main() {
 					}
 
 					Core::Core core = Core::Core(Core::Pipeline(modules));
+					std::string path;
                     if ((*virtualHost)["network"].get<std::string>() == "netSsl") {
-
+						path = getCorrectPathOfModuleLinux("libmodSSL",
+														   paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
                     }
                     else {
-                        std::string path = getCorrectPathOfModuleLinux("libmodNetwork",
-                                                                       paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
-                        if (!path.empty()){
+                        path = getCorrectPathOfModuleLinux("libmodNetwork",
+														   paths.get<std::shared_ptr<zia::apipp::ConfArray>>()->elems);
+					}
+
+					if (!path.empty()){
                             Library lib = Library(path);
                             auto ptr = reinterpret_cast<netEntryPoint>(lib.loadSym("create"));
                             auto net = ptr(static_cast<unsigned short>((*virtualHost)["port"].get<long long int>()));
                             core.setNet(net);
 							core.run();
 						}
-                    }
 					exit(0);
 				}
 				else
